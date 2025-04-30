@@ -9,9 +9,6 @@ const News = (props) => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
-  // document.title = `${capitalizeFirstLetter(
-  //   props.category
-  // )} - Nepal News`;
 
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -34,7 +31,9 @@ const News = (props) => {
   };
 
   useEffect(() => {
+    document.title = `${capitalizeFirstLetter(props.category)} - Nepal News`;
     updateNews();
+    // eslint-disable-next-line
   }, []);
 
   const handlePrevClick = async () => {
@@ -48,29 +47,30 @@ const News = (props) => {
     updateNews();
   };
 
-  
   const fetchMoreData = async () => {
     const nextPage = page + 1; // calculate first
     const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${nextPage}&pageSize=${props.pageSize}`;
-  
+
     let data = await fetch(url);
     let parsedData = await data.json();
-  
+
     // Filter out already added articles (by URL)
     const existingUrls = new Set(articles.map((article) => article.url));
     const newArticles = parsedData.articles.filter(
       (article) => !existingUrls.has(article.url)
     );
-  
+
     setArticles(articles.concat(newArticles));
     setTotalResults(parsedData.totalResults);
     setPage(nextPage); // update at the end
   };
-  
 
   return (
     <>
-      <h1 className="text-center" style={{ margin: "35px 0px" }}>
+      <h1
+        className="text-center"
+        style={{ margin: "35px 0px", marginTop: "90px" }}
+      >
         Nepal News - Top {capitalizeFirstLetter(props.category)} Headlines
       </h1>
       {loading && <Spinner />}
